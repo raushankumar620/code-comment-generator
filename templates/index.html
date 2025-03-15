@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Comment Generator</title>
+    <!-- <link rel="stylesheet" href="/static/css/style.css"> -->
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f2f5;
+        color: #333;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #4CAF50;
+    }
+
+    label {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    textarea {
+        width: 100%;
+        height: 150px;
+        margin-bottom: 20px;
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        resize: none;
+    }
+
+    textarea:focus {
+        outline: none;
+        border-color: #4CAF50;
+    }
+
+    .button-section {
+        text-align: center;
+    }
+
+    button {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    .code-output-section {
+        margin-top: 20px;
+    }
+
+    #commented-code {
+        background-color: #f5f5f5;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <h1>Code Comment Generator</h1>
+        <div class="code-input-section">
+            <label for="code-input">Paste your Code:</label>
+            <textarea id="code-input" placeholder="Enter your code here..."></textarea>
+        </div>
+        <div class="button-section">
+            <button id="generate-btn">Generate Comments</button>
+        </div>
+        <div class="code-output-section">
+            <label for="commented-code">Commented Code:</label>
+            <textarea id="commented-code" readonly
+                placeholder="Generated commented code will appear here..."></textarea>
+        </div>
+    </div>
+    <script>
+        document.getElementById('generate-btn').addEventListener('click', function () {
+            const codeInput = document.getElementById('code-input').value;
+
+            if (!codeInput) {
+                alert('Please enter some code to generate comments.');
+                return;
+            }
+
+            // Send the code to the backend API
+            fetch('/generate_comment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ code: codeInput }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        document.getElementById('commented-code').value = data.commented_code;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while generating comments.');
+                });
+        });
+
+    </script>
+</body>
+
+</html>
